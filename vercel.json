@@ -1,7 +1,7 @@
 {
   "functions": {
     "api/*.rs": {
-      "runtime": "vercel-rust@0.5.0"
+      "runtime": "@vercel/rust"
     }
   }
 }
