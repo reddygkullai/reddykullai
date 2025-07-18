@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Staff Profile</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: linear-gradient(to right, #6a1b9a, #8e24aa);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header h2 {
+            margin: 0;
+        }
+        header a.button {
+            background: #ffffff33;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+        header a.button:hover {
+            background: #ffffff55;
+        }
+        .profile-card {
+            background: white;
+            max-width: 500px;
+            margin: 30px auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .profile-card img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #6a1b9a;
+        }
+        .profile-card h3 {
+            color: #4a148c;
+            margin: 10px 0 5px;
+        }
+        .profile-card p {
+            margin: 5px 0;
+            font-size: 16px;
+        }
+        .button-purple {
+            display: inline-block;
+            margin-top: 15px;
+            background: #6a1b9a;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        .button-purple:hover {
+            background: #512da8;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h2>👤 Staff Profile</h2>
+        <a href="{{ url_for('logout') }}" class="button">Logout</a>
+    </header>
+
+    <div class="profile-card">
+        {% if staff[9] %}
+            <img src="{{ url_for('static', filename=staff[9].split('static/')[-1]) }}" alt="Profile Photo">
+        {% else %}
+            <img src="{{ url_for('static', filename='default_profile.png') }}" alt="Profile Photo">
+        {% endif %}
+        <h3>{{ staff[1] }}</h3>
+        <p>📅 DOB: {{ staff[2] }}</p>
+        <p>🏢 Department: {{ staff[3] }}</p>
+        <p>🧑‍💼 Experience: {{ staff[4] }} years</p>
+        <p>📞 Mobile: {{ staff[5] }}</p>
+        <p>📧 Email: {{ staff[6] }}</p>
+
+        <a href="{{ url_for('edit_staff_profile') }}" class="button-purple">✏️ Edit Profile</a>
+    </div>
+</body>
+</html>

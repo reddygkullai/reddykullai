@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Dashboard</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: #f4f6f8;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header h2 {
+            margin: 0;
+        }
+        header button {
+            background: white;
+            color: #2575fc;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        header button:hover {
+            background: #e0e0e0;
+        }
+        .container {
+            display: flex;
+            flex: 1;
+        }
+        .sidebar {
+            background: white;
+            width: 200px;
+            padding: 20px;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .sidebar button {
+            background: #2575fc;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+        .sidebar button:hover {
+            background: #1b5ac2;
+        }
+        .content {
+            flex: 1;
+            padding: 30px;
+        }
+        h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .table-container {
+            overflow-x: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background: #2575fc;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background: #f2f2f2;
+        }
+        .profile-section {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .profile-section img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;
+            border: 3px solid #2575fc;
+        }
+        .profile-section h3 {
+            margin: 5px 0 0 0;
+            color: #2575fc;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h2>🎓 Student Dashboard</h2>
+        <form action="{{ url_for('logout') }}" method="get">
+            <button type="submit">Logout</button>
+        </form>
+    </header>
+
+    <div class="container">
+        <div class="sidebar">
+            <button onclick="showSection('profile')">👤 Profile</button>
+            <button onclick="showSection('marks')">📊 Marks</button>
+        </div>
+
+        <div class="content">
+            <div id="profileSection" class="profile-section">
+                <img src="{{ student[7] if student[7] else url_for('static', filename='default_profile.png') }}" alt="Profile Photo">
+                <h3>{{ student[1] }} ({{ student[2] }})</h3>
+                <p>{{ student[3] }}</p>
+            </div>
+
+            <div id="marksSection" class="table-container" style="display:none;">
+                <h3>📊 Your Marks:</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Subject Code</th>
+                            <th>Subject Name</th>
+                            <th>Internal</th>
+                            <th>External</th>
+                            <th>Total</th>
+                            <th>Credits</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for mark in marks %}
+                        <tr>
+                            <td>{{ mark[0] }}</td>
+                            <td>{{ mark[1] }}</td>
+                            <td>{{ mark[2] }}</td>
+                            <td>{{ mark[3] }}</td>
+                            <td>{{ mark[4] }}</td>
+                            <td>{{ mark[5] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showSection(section) {
+            document.getElementById('profileSection').style.display = section === 'profile' ? 'block' : 'none';
+            document.getElementById('marksSection').style.display = section === 'marks' ? 'block' : 'none';
+        }
+        // Default to Profile
+        showSection('profile');
+    </script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Staff Login | BET e-Portal</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: linear-gradient(135deg, #8e44ad, #3498db);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-box {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            width: 340px;
+            text-align: center;
+        }
+        h3 {
+            color: #8e44ad;
+            margin-bottom: 16px;
+            font-size: 22px;
+        }
+        input {
+            width: 90%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 25px;
+            font-size: 15px;
+            transition: border-color 0.3s;
+        }
+        input:focus {
+            border-color: #8e44ad;
+            outline: none;
+        }
+        .button {
+            background: #8e44ad;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 15px;
+            width: 95%;
+            margin: 8px 0;
+            transition: background 0.3s, transform 0.2s;
+        }
+        .button:hover {
+            background: #732d91;
+            transform: translateY(-2px);
+        }
+        .secondary-button {
+            background: #f39c12;
+        }
+        .secondary-button:hover {
+            background: #d68910;
+        }
+        .exit-button {
+            background: #e74c3c;
+        }
+        .exit-button:hover {
+            background: #c0392b;
+        }
+        .flash {
+            background: #fdecea;
+            color: #c0392b;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+        footer {
+            margin-top: 15px;
+            color: white;
+            font-size: 13px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h3>🧑‍🏫 Staff Login</h3>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flash">{{ messages[0] }}</div>
+            {% endif %}
+        {% endwith %}
+        <form method="POST">
+            <input type="text" name="staff_username" placeholder="Username" required><br>
+            <input type="password" name="staff_password" placeholder="Password" required><br>
+            <button type="submit" class="button">Login</button>
+            <button type="button" class="button secondary-button" onclick="window.location.href='{{ url_for('staff_signup') }}'">Signup</button>
+            <button type="button" class="button secondary-button" onclick="window.location.href='{{ url_for('staff_forgot_password') }}'">Forgot Password</button>
+            <button type="button" class="button exit-button" onclick="window.location.href='{{ url_for('index') }}'">Exit to Home</button>
+        </form>
+    </div>
+    <footer>
+        © 2025 BET e-Portal. All rights reserved.
+    </footer>
+</body>
+</html>

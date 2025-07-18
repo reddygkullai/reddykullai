@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Profile</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f2f2f2; }
+        .container { max-width: 500px; margin: 40px auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #6a1b9a; }
+        label { display: block; margin-top: 10px; }
+        input[type="text"], input[type="email"], input[type="password"], input[type="file"] {
+            width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px;
+        }
+        button {
+            width: 100%; background: #6a1b9a; color: white; padding: 10px; border: none; border-radius: 4px;
+            margin-top: 15px; font-size: 16px;
+        }
+        button:hover { background: #512da8; cursor: pointer; }
+        .flash { background: #dff0d8; color: #3c763d; padding: 10px; margin-bottom: 10px; border-radius: 4px; }
+        .profile-pic { display: block; margin: 10px auto; border-radius: 50%; width: 100px; height: 100px; object-fit: cover; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Edit Profile</h2>
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for message in messages %}
+              <div class="flash">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        {% if staff[4] %}
+            <img src="{{ url_for('static', filename=staff[4].split('static/')[-1]) }}" alt="Profile Photo" class="profile-pic">
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data">
+            <label>Name:</label>
+            <input type="text" name="name" value="{{ staff[1] }}" required>
+
+            <label>Email:</label>
+            <input type="email" name="email" value="{{ staff[2] }}" required>
+
+            <label>Department:</label>
+            <input type="text" name="department" value="{{ staff[3] }}" required>
+
+            <label>Upload New Photo:</label>
+            <input type="file" name="photo">
+
+            <label>New Password (leave blank to keep current):</label>
+            <input type="password" name="password">
+
+            <button type="submit">Save Changes</button>
+        </form>
+    </div>
+</body>
+</html>

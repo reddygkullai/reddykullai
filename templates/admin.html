@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Login - BET e-Portal</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #f3e5f5, #e1bee7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+        }
+        .box {
+            background: white;
+            padding: 30px 25px;
+            border-radius: 12px;
+            width: 320px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            text-align: center;
+        }
+        h2 {
+            color: #8e44ad;
+            margin-bottom: 10px;
+        }
+        .icon {
+            font-size: 40px;
+            color: #8e44ad;
+            margin-bottom: 10px;
+        }
+        input {
+            width: 90%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 15px;
+            transition: border 0.3s;
+        }
+        input:focus {
+            border: 1px solid #8e44ad;
+            outline: none;
+        }
+        button {
+            width: 95%;
+            background: #8e44ad;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            padding: 12px;
+            cursor: pointer;
+            font-size: 15px;
+            margin-top: 10px;
+            transition: background 0.3s, transform 0.2s;
+        }
+        button:hover {
+            background: #732d91;
+            transform: translateY(-2px);
+        }
+        .links a {
+            display: block;
+            margin-top: 10px;
+            color: #8e44ad;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+        .links a:hover {
+            color: #5e3370;
+            text-decoration: underline;
+        }
+        .flash {
+            margin: 10px 0;
+            color: green;
+            font-weight: bold;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+        footer {
+            width: 100%;
+            text-align: center;
+            padding: 12px;
+            position: fixed;
+            bottom: 0;
+            background: #732d91;
+            color: white;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <div class="icon">🛡️</div>
+        <h2>Admin Login</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <p class="{{ category }}">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <form method="POST" action="{{ url_for('admin_login') }}">
+            <input type="text" name="admin_username" placeholder="Username" required>
+            <input type="password" name="admin_password" placeholder="Password" required>
+            <button type="submit">🔐 Login</button>
+        </form>
+        <div class="links">
+            <a href="{{ url_for('admin_signup') }}">📝 Sign Up</a>
+            <a href="{{ url_for('admin_forgot_password') }}">🔑 Forgot Password?</a>
+            <a href="{{ url_for('index') }}">⬅ Exit to Home</a>
+        </div>
+    </div>
+    <footer>
+        © 2025 BET e-Portal. All rights reserved.
+    </footer>
+</body>
+</html>
