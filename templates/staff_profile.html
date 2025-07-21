@@ -1,13 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Staff Profile</title>
+    <meta charset="UTF-8" />
+    <title>Staff Profile | BET e-Portal</title>
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
-            background: #f2f2f2;
+            background: #f4f6f8;
             margin: 0;
-            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
         header {
             background: linear-gradient(to right, #6a1b9a, #8e24aa);
@@ -17,42 +20,78 @@
             justify-content: space-between;
             align-items: center;
         }
-        header h2 {
-            margin: 0;
+        header h2 { margin: 0; font-size: 22px; }
+        header button {
+            background: white;
+            color: #6a1b9a;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
         }
-        header a.button {
-            background: #ffffff33;
-            color: white;
-            padding: 6px 12px;
-            border-radius: 4px;
-            text-decoration: none;
+        header button:hover { background: #e0e0e0; }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
-        header a.button:hover {
-            background: #ffffff55;
+        .header-right img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid white;
+            cursor: pointer;
+        }
+        .header-right .info {
+            text-align: right;
+            font-size: 13px;
+            line-height: 1.3;
         }
         .profile-card {
             background: white;
-            max-width: 500px;
-            margin: 30px auto;
+            max-width: 400px;
+            margin: 40px auto;
             padding: 20px;
-            border-radius: 10px;
+            border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             text-align: center;
+            position: relative;
         }
         .profile-card img {
             width: 120px;
             height: 120px;
             border-radius: 50%;
             object-fit: cover;
-            border: 3px solid #6a1b9a;
+            border: 4px solid #6a1b9a;
+            cursor: pointer;
+        }
+        .edit-overlay {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255,255,255,0.9);
+            color: #6a1b9a;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: none;
+        }
+        .profile-card:hover .edit-overlay {
+            display: block;
         }
         .profile-card h3 {
-            color: #4a148c;
+            color: #6a1b9a;
             margin: 10px 0 5px;
         }
         .profile-card p {
-            margin: 5px 0;
-            font-size: 16px;
+            margin: 4px 0;
+            color: #555;
+            font-size: 15px;
         }
         .button-purple {
             display: inline-block;
@@ -60,27 +99,41 @@
             background: #6a1b9a;
             color: white;
             padding: 8px 16px;
-            border-radius: 5px;
+            border-radius: 6px;
             text-decoration: none;
+            font-weight: 500;
             transition: background 0.3s;
         }
-        .button-purple:hover {
-            background: #512da8;
-        }
+        .button-purple:hover { background: #512da8; }
+        #fileInput { display: none; }
     </style>
 </head>
 <body>
     <header>
         <h2>👤 Staff Profile</h2>
-        <a href="{{ url_for('logout') }}" class="button">Logout</a>
+        <div class="header-right">
+            <div class="info">
+                <div>{{ staff[6] }}</div> <!-- Email -->
+                <div>{{ staff[3] }}</div> <!-- Department -->
+            </div>
+            <img id="headerProfilePic"
+                 src="{% if staff[9] %}{{ url_for('static', filename='uploads_staff/' + staff[9]) }}{% else %}{{ url_for('static', filename='default_profile.png') }}{% endif %}"
+                 alt="Profile Photo"
+                 onclick="document.getElementById('fileInput').click();"
+                 onerror="this.onerror=null;this.src='{{ url_for('static', filename='default_profile.png') }}';">
+            <form action="{{ url_for('logout') }}" method="get">
+                <button type="submit">Logout</button>
+            </form>
+        </div>
     </header>
 
     <div class="profile-card">
-        {% if staff[9] %}
-            <img src="{{ url_for('static', filename=staff[9].split('static/')[-1]) }}" alt="Profile Photo">
-        {% else %}
-            <img src="{{ url_for('static', filename='default_profile.png') }}" alt="Profile Photo">
-        {% endif %}
+        <span class="edit-overlay" onclick="document.getElementById('fileInput').click();">Edit Photo</span>
+        <img id="profilePic"
+             src="{% if staff[9] %}{{ url_for('static', filename='uploads_staff/' + staff[9]) }}{% else %}{{ url_for('static', filename='default_profile.png') }}{% endif %}"
+             alt="Profile Photo"
+             onclick="document.getElementById('fileInput').click();"
+             onerror="this.onerror=null;this.src='{{ url_for('static', filename='default_profile.png') }}';">
         <h3>{{ staff[1] }}</h3>
         <p>📅 DOB: {{ staff[2] }}</p>
         <p>🏢 Department: {{ staff[3] }}</p>
@@ -89,6 +142,37 @@
         <p>📧 Email: {{ staff[6] }}</p>
 
         <a href="{{ url_for('edit_staff_profile') }}" class="button-purple">✏️ Edit Profile</a>
+
+        <form id="uploadForm" enctype="multipart/form-data">
+            <input type="file" id="fileInput" name="photo" accept="image/*" onchange="uploadPhoto()">
+        </form>
     </div>
+
+    <script>
+        function uploadPhoto() {
+            const fileInput = document.getElementById('fileInput');
+            const formData = new FormData();
+            formData.append('photo', fileInput.files[0]);
+
+            fetch("{{ url_for('edit_staff_photo') }}", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.success){
+                    const newSrc = data.new_url + '?t=' + new Date().getTime();
+                    document.getElementById('profilePic').src = newSrc;
+                    document.getElementById('headerProfilePic').src = newSrc;
+                    alert("✅ Profile photo updated successfully!");
+                } else {
+                    alert("❌ Failed to update photo: " + data.error);
+                }
+            })
+            .catch(error => {
+                alert("❌ Upload error: " + error);
+            });
+        }
+    </script>
 </body>
 </html>

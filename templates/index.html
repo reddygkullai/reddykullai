@@ -66,11 +66,11 @@
 </head>
 <body>
     <header>
-        <img src="{{ url_for('static', filename='logo.png') }}" alt="BET Logo">
+        <img src="{{ url_for('static', filename='drkvsrit_logo.png') }}" alt="BET Logo" onerror="this.style.display='none';">
         <div>
-            <button onclick="window.location.href='{{ url_for('student_login') }}'">Student Login</button>
-            <button onclick="window.location.href='{{ url_for('staff_login') }}'">Staff Login</button>
-            <button onclick="window.location.href='{{ url_for('admin_login') }}'">Admin Login</button>
+            <button onclick="location.href='{{ url_for('student_login') }}'">Student Login</button>
+            <button onclick="location.href='{{ url_for('staff_login') }}'">Staff Login</button>
+            <button onclick="location.href='{{ url_for('admin_login') }}'">Admin Login</button>
         </div>
     </header>
     <main>

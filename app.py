@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, flash, session,jsonify
 import os
 import sqlite3
 from werkzeug.utils import secure_filename
@@ -7,8 +7,14 @@ app = Flask(__name__)
 app.secret_key = 'secret'
 
 UPLOAD_FOLDER = 'static/uploads'
+STUDENT_UPLOAD_FOLDER = 'static/uploads_students'
+
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+os.makedirs(STUDENT_UPLOAD_FOLDER, exist_ok=True)
+
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['STUDENT_UPLOAD_FOLDER'] = STUDENT_UPLOAD_FOLDER
+
 
 # =============== DATABASE INITIALIZATION ===============
 def init_db():
@@ -221,7 +227,31 @@ def staff_dashboard():
     return render_template('staff_dashboard.html', staff=staff_details, students=students_list)
 
 
-# ===== STUDENT SIGNUP =====
+@app.route('/edit_staff_photo', methods=['POST'])
+def edit_staff_photo():
+    if 'staff_id' not in session:
+        return jsonify(success=False, error='Not logged in')
+
+    staff_id = session['staff_id']
+    photo = request.files.get('photo')
+
+    if not photo:
+        return jsonify(success=False, error='No photo uploaded')
+
+    filename = secure_filename(photo.filename)
+    filepath = os.path.join('static/uploads_staff', filename)
+    photo.save(filepath)
+
+    with sqlite3.connect('database.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute("UPDATE staff SET photo = ? WHERE id = ?", (filename, staff_id))
+        conn.commit()
+
+    new_url = url_for('static', filename='uploads_staff/' + filename)
+    return jsonify(success=True, new_url=new_url)
+
+
+# ================= STUDENT SIGNUP =================
 @app.route('/student_signup', methods=['GET', 'POST'])
 def student_signup():
     if request.method == 'POST':
@@ -232,30 +262,28 @@ def student_signup():
             mobile = request.form['mobile']
             join_date = request.form['join_date']
             address = request.form['address']
+
             photo = request.files['photo']
+            filename = secure_filename(photo.filename)
+            photo_path = os.path.join(app.config['STUDENT_UPLOAD_FOLDER'], filename)
+            photo.save(photo_path)
+            photo_url = f'uploads_students/{filename}'
 
-            photo_filename = ""
-            if photo and photo.filename:
-                photo_filename = secure_filename(photo.filename)
-                photo_path = os.path.join(app.config['UPLOAD_FOLDER'], photo_filename)
-                photo.save(photo_path)
-
-            username = hallticket  # using hallticket as username
-            password = hallticket  # using hallticket as default password
+            username = hallticket
+            password = hallticket
 
             with sqlite3.connect('database.db') as conn:
                 cursor = conn.cursor()
-                cursor.execute('''
+                cursor.execute("""
                     INSERT INTO students (name, hallticket, department, mobile, join_date, address, photo, username, password)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-                ''', (name, hallticket, department, mobile, join_date, address, photo_filename, username, password))
+                """, (name, hallticket, department, mobile, join_date, address, photo_path, username, password))
                 conn.commit()
-
-            flash('✅ Student signup successful! You can now log in.', 'success')
+            flash('✅ Registration successful. Please log in.')
             return redirect(url_for('student_login'))
 
         except sqlite3.IntegrityError:
-            flash('❌ Hall Ticket already registered. Use a different one.', 'error')
+            flash('❌ Hall Ticket already registered. Try logging in.', 'error')
             return redirect(url_for('student_signup'))
         except Exception as e:
             flash(f'❌ Error: {e}', 'error')
@@ -301,6 +329,46 @@ def student_dashboard():
         ''', (student_id,))
         marks_list = cursor.fetchall()
     return render_template('student_dashboard.html', student=student_details, marks=marks_list)
+
+@app.route('/edit_student_photo', methods=['POST'])
+def edit_student_photo():
+    if 'student_username' not in session:
+        return {"success": False, "error": "Not logged in."}
+
+    username = session['student_username']
+    photo = request.files.get('photo')
+
+    if photo and photo.filename:
+        filename = secure_filename(photo.filename)
+        photo_path = os.path.join(app.config['STUDENT_UPLOAD_FOLDER'], filename)
+        photo_url = f'uploads_students/{filename}'
+
+        with sqlite3.connect('database.db') as conn:
+            cursor = conn.cursor()
+            cursor.execute('SELECT photo FROM students WHERE username = ?', (username,))
+            result = cursor.fetchone()
+            current_photo = result[0] if result else None
+
+            # Remove old photo if it exists and is not the default
+            if current_photo and current_photo != 'uploads_students/kullai.jpg':
+                try:
+                    old_photo_path = os.path.join('static', current_photo)
+                    if os.path.exists(old_photo_path):
+                        os.remove(old_photo_path)
+                except Exception as e:
+                    print(f"Warning: could not remove old photo: {e}")
+
+            # Save the new photo
+            photo.save(photo_path)
+
+            # Update the database with the new photo path
+            cursor.execute('UPDATE students SET photo = ? WHERE username = ?', (photo_url, username))
+            conn.commit()
+
+        return {"success": True, "new_url": url_for('static', filename=photo_url)}
+
+    return {"success": False, "error": "No file received."}
+
 
 @app.route('/student_forgot_password', methods=['GET', 'POST'])
 def student_forgot_password():

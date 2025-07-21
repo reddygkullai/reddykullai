@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Student Dashboard</title>
+    <meta charset="UTF-8" />
+    <title>Student Dashboard | BET e-Portal</title>
     <style>
         body {
             margin: 0;
@@ -21,6 +22,7 @@
         }
         header h2 {
             margin: 0;
+            font-size: 22px;
         }
         header button {
             background: white;
@@ -57,6 +59,7 @@
             cursor: pointer;
             font-weight: 500;
             transition: background 0.3s;
+            text-align: left;
         }
         .sidebar button:hover {
             background: #1b5ac2;
@@ -65,9 +68,48 @@
             flex: 1;
             padding: 30px;
         }
-        h3 {
-            color: #333;
-            margin-bottom: 10px;
+        .profile-section {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .profile-section img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+            border: 4px solid #2575fc;
+            cursor: pointer;
+        }
+        .profile-section h3 {
+            margin: 5px 0 0 0;
+            color: #2575fc;
+            font-size: 20px;
+        }
+        .profile-section p {
+            margin: 4px 0;
+            color: #555;
+            font-size: 15px;
+        }
+        .edit-overlay {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            cursor: pointer;
+            font-size: 12px;
+            color: #2575fc;
+            background: rgba(255,255,255,0.9);
+            padding: 4px 8px;
+            border-radius: 12px;
+            display: none;
+        }
+        .profile-section:hover .edit-overlay {
+            display: block;
         }
         .table-container {
             overflow-x: auto;
@@ -75,6 +117,12 @@
             padding: 20px;
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .table-container h3 {
+            margin-top: 0;
+            color: #2575fc;
+            text-align: center;
+            font-size: 20px;
         }
         table {
             width: 100%;
@@ -92,31 +140,19 @@
         tr:nth-child(even) {
             background: #f2f2f2;
         }
-        .profile-section {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .profile-section img {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 10px;
-            border: 3px solid #2575fc;
-        }
-        .profile-section h3 {
-            margin: 5px 0 0 0;
-            color: #2575fc;
+        #fileInput {
+            display: none;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h2>🎓 Student Dashboard</h2>
-        <form action="{{ url_for('logout') }}" method="get">
-            <button type="submit">Logout</button>
-        </form>
-    </header>
+ <header>
+    <h2>🎓 Student Dashboard</h2>
+    <form action="{{ url_for('logout') }}" method="get">
+        <button type="submit">Logout</button>
+    </form>
+</header>
+
 
     <div class="container">
         <div class="sidebar">
@@ -126,13 +162,22 @@
 
         <div class="content">
             <div id="profileSection" class="profile-section">
-                <img src="{{ student[7] if student[7] else url_for('static', filename='default_profile.png') }}" alt="Profile Photo">
+                <span class="edit-overlay" onclick="document.getElementById('fileInput').click();">Edit Photo</span>
+                <img id="profilePic"
+                     src="{{ url_for('static', filename=student[7] if student[7] else 'uploads_students/kullai.jpg') }}"
+                     alt="Profile Photo"
+                     onclick="document.getElementById('fileInput').click();"
+                     onerror="this.onerror=null;this.src='{{ url_for('static', filename='uploads_students/kullai.jpg') }}';">
                 <h3>{{ student[1] }} ({{ student[2] }})</h3>
                 <p>{{ student[3] }}</p>
+
+                <form id="uploadForm" enctype="multipart/form-data" style="margin-top: 15px;">
+                    <input type="file" id="fileInput" name="photo" accept="image/*" onchange="uploadPhoto()">
+                </form>
             </div>
 
             <div id="marksSection" class="table-container" style="display:none;">
-                <h3>📊 Your Marks:</h3>
+                <h3>📊 Your Marks</h3>
                 <table>
                     <thead>
                         <tr>
@@ -166,8 +211,30 @@
             document.getElementById('profileSection').style.display = section === 'profile' ? 'block' : 'none';
             document.getElementById('marksSection').style.display = section === 'marks' ? 'block' : 'none';
         }
-        // Default to Profile
         showSection('profile');
+
+        function uploadPhoto() {
+            const fileInput = document.getElementById('fileInput');
+            const formData = new FormData();
+            formData.append('photo', fileInput.files[0]);
+
+            fetch("{{ url_for('edit_student_photo') }}", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.success){
+                    document.getElementById('profilePic').src = data.new_url + '?t=' + new Date().getTime();
+                    alert("✅ Profile photo updated successfully!");
+                } else {
+                    alert("❌ Failed to update photo: " + data.error);
+                }
+            })
+            .catch(error => {
+                alert("❌ Upload error: " + error);
+            });
+        }
     </script>
 </body>
 </html>

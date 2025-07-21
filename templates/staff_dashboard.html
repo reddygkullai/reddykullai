@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Staff Dashboard</title>
+    <title>Staff Dashboard | BET e-Portal</title>
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
@@ -17,9 +17,7 @@
             justify-content: space-between;
             align-items: center;
         }
-        header h2 {
-            margin: 0;
-        }
+        header h2 { margin: 0; }
         .header-buttons a {
             background: #ffffff33;
             color: white;
@@ -28,9 +26,7 @@
             text-decoration: none;
             margin-left: 10px;
         }
-        .header-buttons a:hover {
-            background: #ffffff55;
-        }
+        .header-buttons a:hover { background: #ffffff55; }
         table {
             width: 95%;
             margin: 20px auto;
@@ -45,13 +41,8 @@
             text-align: center;
             border-bottom: 1px solid #ddd;
         }
-        th {
-            background: #9575cd;
-            color: white;
-        }
-        tr:hover {
-            background: #f9f9f9;
-        }
+        th { background: #9575cd; color: white; }
+        tr:hover { background: #f9f9f9; }
         .button {
             background: #6a1b9a;
             color: white;
@@ -60,9 +51,7 @@
             border-radius: 4px;
             font-size: 14px;
         }
-        .button:hover {
-            background: #512da8;
-        }
+        .button:hover { background: #512da8; }
         img.profile-photo {
             border-radius: 50%;
             height: 40px;
@@ -74,7 +63,7 @@
 <body>
 
 <header>
-    <h2>🧑‍🏫 Staff Dashboard - {{ staff[1] }}</h2>
+    <h2>🧑‍🏫 Staff Dashboard</h2>
     <div class="header-buttons">
         <a href="{{ url_for('staff_profile') }}">👤 Profile</a>
         <a href="{{ url_for('logout') }}">🚪 Logout</a>
@@ -101,7 +90,7 @@
             <td>{{ student[3] }}</td>
             <td>
                 {% if student[4] %}
-                    <img src="{{ url_for('static', filename=student[4].split('static/')[-1]) }}" alt="Photo" class="profile-photo">
+                    <img src="{{ url_for('static', filename='uploads/' ~ student[4]) }}" alt="Photo" class="profile-photo">
                 {% else %}
                     N/A
                 {% endif %}

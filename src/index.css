@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Optional: Smooth scrolling across your app */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Optional: Custom scrollbar styling for better look */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-thumb {
+    background-color: #8e44ad;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-track {
+    background: #f3e5f5;
+}
+
+/* Optional: Button focus outline improvement */
+button:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(142, 68, 173, 0.4);
+}
+
+/* Optional: Transition utilities for smoother hover effects */
+.transition {
+    transition: all 0.2s ease-in-out;
+}
