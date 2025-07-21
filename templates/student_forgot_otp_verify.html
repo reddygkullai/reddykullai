@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <title>Forgot Password | BET e-Portal</title>
+    <title>Verify OTP | BET e-Portal</title>
     <style>
         * { box-sizing: border-box; }
         body {
@@ -14,7 +14,7 @@
             min-height: 100vh;
             margin: 0;
         }
-        .container {
+        .otp-box {
             background: #ffffff;
             padding: 30px 25px;
             border-radius: 12px;
@@ -64,13 +64,12 @@
             background: #732d91;
         }
         .flash {
-            padding: 8px 12px;
-            border-radius: 5px;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             font-size: 14px;
+            text-align: center;
         }
-        .flash.success { background: #2ecc71; color: white; }
-        .flash.error { background: #e74c3c; color: white; }
+        .flash.success { color: green; }
+        .flash.error { color: red; }
         a {
             display: inline-block;
             margin-top: 15px;
@@ -82,8 +81,8 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <h3>Forgot Password</h3>
+    <div class="otp-box">
+        <h3>Verify OTP</h3>
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
@@ -92,8 +91,8 @@
             {% endif %}
         {% endwith %}
         <form method="POST">
-            <input type="email" name="email" placeholder="Enter Registered Email" required>
-            <button type="submit">Send OTP</button>
+            <input type="text" name="otp" placeholder="Enter OTP sent to your email" required>
+            <button type="submit">Verify OTP</button>
         </form>
         <a href="{{ url_for('student_login') }}">⬅ Back to Login</a>
     </div>

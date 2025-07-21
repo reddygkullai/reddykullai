@@ -4,9 +4,7 @@
     <meta charset="UTF-8" />
     <title>Student Sign Up | BET e-Portal</title>
     <style>
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #8e44ad, #3498db);
@@ -66,11 +64,13 @@
             background: #732d91;
         }
         .flash {
-            color: #e74c3c;
-            margin-bottom: 12px;
+            padding: 8px 12px;
+            border-radius: 5px;
+            margin-bottom: 10px;
             font-size: 14px;
-            text-align: center;
         }
+        .flash.success { background: #2ecc71; color: white; }
+        .flash.error { background: #e74c3c; color: white; }
         a {
             display: inline-block;
             margin-top: 15px;
@@ -86,10 +86,10 @@
 <body>
     <div class="signup-box">
         <h3>Student Sign Up</h3>
-        {% with messages = get_flashed_messages() %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                {% for message in messages %}
-                    <div class="flash">{{ message }}</div>
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
                 {% endfor %}
             {% endif %}
         {% endwith %}
@@ -100,6 +100,7 @@
             <input type="text" name="mobile" placeholder="Mobile Number" required>
             <input type="date" name="join_date" placeholder="Join Date" required>
             <textarea name="address" placeholder="Address" required></textarea>
+            <input type="email" name="email" placeholder="Email Address" required>
             <input type="file" name="photo" accept="image/*" required>
             <button type="submit">Register</button>
         </form>

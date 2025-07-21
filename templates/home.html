@@ -124,14 +124,15 @@
         <a href="tel:+919550616861">📞 +91 9550616861</a>
     </div>
     <div class="right">
+        <button onclick="location.href='{{ url_for('student_login') }}'">Student Login</button>
+        <button onclick="location.href='{{ url_for('staff_login') }}'">Staff Login</button>
+        <button onclick="location.href='{{ url_for('admin_login') }}'">Admin Login</button>
         <a href="#">R & D</a>
         <a href="#">Code of Conduct</a>
         <a href="#">MoU Grievances</a>
         <a href="#">Feedback</a>
         <a href="#">IQAC</a>
-        <button onclick="location.href='{{ url_for('student_login') }}'">Student Login</button>
-        <button onclick="location.href='{{ url_for('staff_login') }}'">Staff Login</button>
-        <button onclick="location.href='{{ url_for('admin_login') }}'">Admin Login</button>
+        <a href="#">Sbesc E-Campus</a>
         <button class="contact-button" onclick="location.href='{{ url_for('contact') }}'">Contact Us</button>
     </div>
 </div>
@@ -165,7 +166,7 @@
 </div>
 
 <!-- Campus Image -->
-<img src="{{ url_for('static', filename='drkvsrit_logo.jpg') }}" alt="Campus Image" class="campus-image">
+<img src="{{ url_for('static', filename='campus.jpg') }}" alt="Campus Image" class="campus-image">
 
 <!-- Footer -->
 <footer>

@@ -27,9 +27,14 @@
             margin-left: 10px;
         }
         .header-buttons a:hover { background: #ffffff55; }
+        h3 {
+            text-align: center;
+            margin: 20px 0;
+            color: #333;
+        }
         table {
             width: 95%;
-            margin: 20px auto;
+            margin: 0 auto 30px auto;
             border-collapse: collapse;
             background: white;
             border-radius: 8px;
@@ -70,7 +75,7 @@
     </div>
 </header>
 
-<h3 style="text-align:center; margin-top: 20px;">📋 Registered Students</h3>
+<h3>📋 Registered Students</h3>
 
 <table>
     <thead>
@@ -90,7 +95,7 @@
             <td>{{ student[3] }}</td>
             <td>
                 {% if student[4] %}
-                    <img src="{{ url_for('static', filename='uploads/' ~ student[4]) }}" alt="Photo" class="profile-photo">
+                    <img src="{{ url_for('static', filename='uploads_students/' ~ student[4]) }}" alt="Photo" class="profile-photo">
                 {% else %}
                     N/A
                 {% endif %}
