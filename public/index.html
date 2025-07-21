@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BET e-Portal Home</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f7f7;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            background: #8e44ad;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+        }
+        header img {
+            height: 60px;
+        }
+        header button {
+            background: white;
+            color: #8e44ad;
+            border: none;
+            padding: 10px 16px;
+            margin-left: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        header button:hover {
+            background: #eae0f6;
+        }
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+        main h1 {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        main p {
+            font-size: 1.1rem;
+            color: #555;
+        }
+        footer {
+            background: #8e44ad;
+            color: white;
+            text-align: center;
+            padding: 12px;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="BET Logo">
+        <div>
+            <button onclick="window.location.href='{{ url_for('student_login') }}'">Student Login</button>
+            <button onclick="window.location.href='{{ url_for('staff_login') }}'">Staff Login</button>
+            <button onclick="window.location.href='{{ url_for('admin_login') }}'">Admin Login</button>
+        </div>
+    </header>
+    <main>
+        <h1>Welcome to BET e-Portal</h1>
+        <p>Access your academic and administrative services efficiently and securely.</p>
+    </main>
+    <footer>
+        © 2025 BET e-Portal. All rights reserved.
+    </footer>
+</body>
+</html>
